@@ -1,7 +1,7 @@
 ---
 title: "Lab 2: Advanced nix"
 subtitle: "Big Data Algorithms"
-author: "YOUR NAME HERE"
+author: "Vera Almozlino"
 format:
   html:
     toc: true
@@ -47,7 +47,10 @@ time (for i in 1 2 3 4 5; do echo "line $i"; sleep 1; done | head -n 1)
 ```
 
 #TODO [the loop needs 5 seconds to finish, but the whole command takes about 1 second. What happened to the loop, and when exactly did it happen? <1pts>]
+head reads the first line and closes the pipe. After sleeping for one second, the loop tries to print the second line, gets SIGPIPE, and stops.
+
 #TODO [why do you think it took slightly more than one second? <1pts>]
+It took slightly more than one second because starting and stopping the processes also takes a little time.
 
 `yes` prints `y` forever (see `man yes`). Run:
 
@@ -59,9 +62,11 @@ Now verify that `yes` isn't running on the machine:
 
 ```bash
 #TODO [command to verify <1pts>]
+ps aux | grep '[y]es'
 ```
 
 #TODO [why does `yes | head -n 3` finish at all, if `yes` never stops on its own? <1pts>]
+head reads three lines and closes the pipe. When yes tries to write more data, it gets SIGPIPE and stops.
 
 Run:
 
@@ -73,9 +78,11 @@ Open a new terminal. Verify that `yes` is still running on the machine:
 
 ```bash
 #TODO [command to verify <1pts>]
+ps aux | grep '[y]es'
 ```
 
 #TODO [why does `yes | sort | head` continue where `yes | head` stopped? <1pts>]
+sort needs to read all the input before it can give sorted output to head. Since yes keeps producing lines, sort keeps waiting for the input to end. head gets no lines, so it does not close the pipe.
 
 Close the second terminal. Return to the first and use "CTRL+C" to stop the `yes` program.
 
